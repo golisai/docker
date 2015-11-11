@@ -8,7 +8,7 @@ import (
 
 // IsPrivate indicates whether container uses it's private network stack.
 func (n NetworkMode) IsPrivate() bool {
-	return !(n.IsHost() || n.IsContainer())
+	return !(n.IsHost() || n.IsIpose() || n.IsContainer())
 }
 
 // IsDefault indicates whether container uses the default network stack.
@@ -45,6 +45,10 @@ func (n NetworkMode) IsBridge() bool {
 	return n == "bridge"
 }
 
+// IsIpose indicates whether container uses ipose  network
+func (n NetworkMode) IsIpose() bool {
+	return n == "ipose"
+}
 // IsHost indicates whether container uses the host network stack.
 func (n NetworkMode) IsHost() bool {
 	return n == "host"

@@ -98,7 +98,7 @@ func (sb *sandbox) needDefaultGW() bool {
 		if ep.endpointInGWNetwork() {
 			continue
 		}
-		if ep.getNetwork().Type() == "null" || ep.getNetwork().Type() == "host" {
+		if ep.getNetwork().Type() == "null" || ep.getNetwork().Type() == "host" || ep.getNetwork().Type() == "ipose" {
 			continue
 		}
 		// TODO v6 needs to be handled.
@@ -128,7 +128,7 @@ func (ep *endpoint) endpointInGWNetwork() bool {
 
 func (sb *sandbox) getEPwithoutGateway() *endpoint {
 	for _, ep := range sb.getConnectedEndpoints() {
-		if ep.getNetwork().Type() == "null" || ep.getNetwork().Type() == "host" {
+		if ep.getNetwork().Type() == "null" || ep.getNetwork().Type() == "host" || ep.getNetwork().Type() == "ipose" {
 			continue
 		}
 		if len(ep.Gateway()) == 0 {

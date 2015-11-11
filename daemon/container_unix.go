@@ -181,7 +181,8 @@ func populateCommand(c *Container, env []string) error {
 	var en *execdriver.Network
 	if !c.Config.NetworkDisabled {
 		en = &execdriver.Network{}
-		if !c.daemon.execDriver.SupportsHooks() || c.hostConfig.NetworkMode.IsHost() {
+		if !c.daemon.execDriver.SupportsHooks() || 
+             	   c.hostConfig.NetworkMode.IsHost() || c.hostConfig.NetworkMode.IsIpose() {
 			en.NamespacePath = c.NetworkSettings.SandboxKey
 		}
 
@@ -437,7 +438,9 @@ func (container *Container) buildSandboxOptions(n libnetwork.Network) ([]libnetw
 	sboxOptions = append(sboxOptions, libnetwork.OptionHostname(container.Config.Hostname),
 		libnetwork.OptionDomainname(container.Config.Domainname))
 
-	if container.hostConfig.NetworkMode.IsHost() {
+        if container.hostConfig.NetworkMode.IsIpose() {
+		sboxOptions = append(sboxOptions, libnetwork.OptionUseDefaultSandbox())
+        } else if container.hostConfig.NetworkMode.IsHost() {
 		sboxOptions = append(sboxOptions, libnetwork.OptionUseDefaultSandbox())
 		sboxOptions = append(sboxOptions, libnetwork.OptionOriginHostsPath("/etc/hosts"))
 		sboxOptions = append(sboxOptions, libnetwork.OptionOriginResolvConfPath("/etc/resolv.conf"))
@@ -445,7 +448,9 @@ func (container *Container) buildSandboxOptions(n libnetwork.Network) ([]libnetw
 		// OptionUseExternalKey is mandatory for userns support.
 		// But optional for non-userns support
 		sboxOptions = append(sboxOptions, libnetwork.OptionUseExternalKey())
-	}
+	} 
+
+
 
 	container.HostsPath, err = container.getRootResourcePath("hosts")
 	if err != nil {
